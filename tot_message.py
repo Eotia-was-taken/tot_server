@@ -1,6 +1,6 @@
 from enum import Enum
 from werkzeug.datastructures import MultiDict
-from utils import Location
+from utils import Location, Channel
 
 
 class Radius(Enum):
@@ -8,11 +8,6 @@ class Radius(Enum):
     SHOUT = "Shout"
     MUMBLE = "Mumble"
     WHISPER = "Whisper"
-
-
-class Channel(Enum):
-    GLOBAL = 1
-    LOCAL = 2
 
 
 class TotMessage:

@@ -4,7 +4,7 @@ import aiohttp
 import discord
 from enum import Enum
 from tot_message import TotMessage
-from utils import send_discord_message, Location
+from utils import send_discord_message, Location, Channel
 
 from typing import Optional, Dict
 
@@ -15,15 +15,17 @@ class ReactionType(Enum):
 
 class Reaction(ABC):
 
-    def __init__(self, name, location: Location, keyphrase: str, radius: int = 50):
+    def __init__(self, name, location: Location, keyphrase: str, channel: int, radius: int = 50):
         self.name = name
         self.location = location
         self.radius = radius
         self.keyphrase = keyphrase
+        self.channel = Channel(channel)
 
     def should_handle(self, tot_message: TotMessage):
         message_location = tot_message.location
         return self.keyphrase in tot_message.message and \
+            self.channel == tot_message.channel and \
             self.radius < self.location.compute_distance_l2(message_location)
 
     @abstractmethod
@@ -38,11 +40,12 @@ class DiscordMessageReaction(Reaction):
                  keyphrase: str,
                  radius: int,
                  url: str,
+                 channel: int,
                  prefix_message: str,
                  postfix_message: str,
                  location: Location):
 
-        super().__init__(name=name, location=location, keyphrase=keyphrase, radius=radius)
+        super().__init__(name=name, location=location, channel=channel, keyphrase=keyphrase, radius=radius)
         self.session: Optional[aiohttp.ClientSession] = None
         self.webhook: Optional[discord.Webhook] = None
         self.prefix = prefix_message

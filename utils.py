@@ -1,6 +1,13 @@
 import discord
 from dataclasses import dataclass
 import math
+from enum import Enum
+
+
+class Channel(Enum):
+    GLOBAL = 1
+    LOCAL = 2
+
 
 @dataclass
 class Location:
